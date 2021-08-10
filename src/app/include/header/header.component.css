@@ -1,0 +1,34 @@
+
+.red-text{
+    color: #FD0A0E !important;
+}
+
+.podsliving-button {
+    border-radius: 4px;
+    padding: 11px 0;
+    text-align: center;
+    border: 0; 
+    box-shadow: none !important; 
+    outline: 0 !important; 
+    min-width: 179px; 
+    color: #ffffff; 
+    display: inline-block; 
+    cursor: pointer;
+    background-color: #FD0A0E;
+    
+}
+.podsliving-button:hover {
+    color: #ffffff;
+    text-decoration: none;
+}
+
+@media (min-width: 767px) and (max-width: 991px) {
+    .podsliving-button{
+        width: 100%;
+    }
+}
+.navbar-nav > ul > li {padding-right: 15px;}
+.navbar-nav > ul > li:nth-last-child(1) {padding-right: 0;}
+.navbar-nav > li {padding-right: 15px;}
+.navbar-nav > li:nth-last-child(1) {padding-right: 0;}
+.navbar-nav {align-items: center;}

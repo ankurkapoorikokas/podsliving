@@ -1,1 +1,129 @@
-<p>login works!</p>
+<div class="modal-content">
+    <div class="login-modal-wrapp">
+        <!-- cross and back buttons -->
+        <a href="javascript:void(0);" data-dismiss="modal" aria-label="Close" class="close-button"><img
+                src="../../../assets/images/cross.svg" alt=""></a>
+        <a href="javascript:void(0);" class="back-button" id="google_register_back_button"><img
+                src="../../../assets/images/back.svg" alt=""></a>
+        <a href="javascript:void(0);" class="back-button" id="register_back_button"><img
+                src="../../../assets/images/back.svg" alt=""></a>
+        <a href="javascript:void(0);" class="back-button" id="register_as_back_button"><img
+                src="../../../assets/images/back.svg" alt=""></a>
+        <a href="javascript:void(0);" class="back-button" id="mobile_no_back__button"><img
+                src="../../../assets/images/back.svg" alt=""></a>
+        <a href="javascript:void(0);" class="back-button" id="get_otp_back_button"><img
+                src="../../../assets/images/back.svg" alt=""></a>
+
+        <!-- left image -->
+        <div class="login-modal-image-block">
+            <div class="login-image-content-block">
+                <div class="login-modal-title text-white">
+                    Book a Home for a Vacation or Long Term
+                </div>
+                <p class="text-white">Lorem ipsum dolor sit amet, consetetur sadipscing elitr</p>
+            </div>
+        </div>
+
+        <!-- right side section -->
+        <div class="login-modal-content-wrapp position-relative">
+            <div id="login_content">
+                <div class="modal-right-content-block d-flex align-items-center"
+                    *ngIf="usernameBlock === true; else password">
+                    <div class="login-modal-content-block">
+                        <div class="login-modal-title">Login or Register</div>
+                        <div class="login-modal-form-wrapp">
+                            <label>Email or Mobile Number</label>
+                            <input type="text" [formControl]="username">
+                            <button class="podsliving-button w-100" id="cont_with_mobile"
+                                (click)="getUsername()">Continue</button>
+                            <div class="or gray-text">or</div>
+                            <a class="continue-button" id="cont_with_goggle"><img
+                                    src="../../../assets/images/google.svg" alt=""> Continue with Google</a>
+                            <a class="continue-button" id="continue_with_social"><img
+                                    src="../../../assets/images/facebook.svg" alt=""> Continue with Facebook</a>
+                            <a class="continue-button"><img src="../../../assets/images/apple.svg" alt=""> Continue with
+                                Apple</a>
+                        </div>
+                    </div>
+                </div>
+                <!-- password block -->
+                <ng-template #password>
+                    <div class="modal-right-content-block d-flex" *ngIf="passwordBlock === true; else registerAs">
+                        <div class="login-modal-content-block">
+                            <div class="login-modal-title">Register</div>
+                            <div class="login-modal-form-wrapp">
+                                <label>CreatePassword</label>
+                                <input type="text" [formControl]="username">
+                                <div class="gray-text input-text-block password-Hint">8 to 16 characters long
+                                    including special character</div>
+                                <button class="podsliving-button w-100" id="cont_with_mobile"
+                                    (click)="getPassword()">Continue</button>
+                            </div>
+                        </div>
+                    </div>
+                </ng-template>
+                <!-- register process continue/ login finish -->
+                <!-- register as -->
+                <ng-template #registerAs>
+                    <div class="modal-right-content-block d-flex align-items-center">
+                        <div class="login-modal-content-block">
+                            <div class="login-modal-title">Register as</div>
+                            <div class="login-modal-form-wrapp">
+                                <div class="row m-0">
+                                    <div class="col-md-12 register-as-block">
+                                        <label class="radio-img">
+                                            <input type="radio" name="layout" />
+                                            <div class="image d-flex">
+                                                <div class="regiaster-as-contnet-wrapp">
+                                                    <div class="register-as-title">Guest</div>
+                                                    <p>Lorem Ipsum is simply dummy text of the printing and
+                                                        typesetting industry.</p>
+                                                </div>
+                                                <div class="register-as-image-block">
+                                                    <img src="../../../assets/images/guest.PNG" alt="">
+                                                </div>
+                                            </div>
+                                        </label>
+                                    </div>
+                                    <div class="col-md-12 register-as-block">
+                                        <label class="radio-img">
+                                            <input type="radio" name="layout" />
+                                            <div class="image d-flex">
+                                                <div class="regiaster-as-contnet-wrapp">
+                                                    <div class="register-as-title">Host</div>
+                                                    <p>Lorem Ipsum is simply dummy text of the printing and
+                                                        typesetting industry.</p>
+                                                </div>
+                                                <div class="register-as-image-block">
+                                                    <img src="../../../assets/images/host.PNG" alt="">
+                                                </div>
+                                            </div>
+                                        </label>
+                                    </div>
+                                    <div class="col-md-12 register-as-block">
+                                        <label class="radio-img">
+                                            <input type="radio" name="layout" />
+                                            <div class="image d-flex">
+                                                <div class="regiaster-as-contnet-wrapp">
+                                                    <div class="register-as-title">Guest & Host</div>
+                                                    <p>Lorem Ipsum is simply dummy text of the printing and
+                                                        typesetting industry.</p>
+                                                </div>
+                                                <div class="register-as-image-block">
+                                                    <img src="../../../assets/images/guest-and-host.PNG" alt="">
+                                                </div>
+                                            </div>
+                                        </label>
+                                    </div>
+                                    <div class="col-md-12 form-block p-0">
+                                        <button class="podsliving-button w-100"
+                                            id="register_as_continue_button">Continue</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </ng-template>
+            </div>
+        </div>
+    </div>
