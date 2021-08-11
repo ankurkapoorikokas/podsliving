@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { FormControl } from '@angular/forms';
+import { FormGroup, FormControl } from '@angular/forms';
 
 @Component({
   selector: 'app-login',
@@ -8,7 +8,11 @@ import { FormControl } from '@angular/forms';
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent implements OnInit {
-  username = new FormControl('');
+
+  emailForm = new FormGroup({
+    username : new FormControl('')
+  });
+  
   password = new FormControl('');
   usernameBlock: boolean = true;
   passwordBlock: boolean = false;
@@ -23,11 +27,13 @@ export class LoginComponent implements OnInit {
    * first screen button
    */
   getUsername(){
+    
     this.usernameBlock = false
     this.passwordBlock = true
   }
 
   getPassword(){
+    console.log(this.emailForm.value);
     this.passwordBlock = false;
     this.role = true
   }

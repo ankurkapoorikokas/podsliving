@@ -31,9 +31,9 @@
                     *ngIf="usernameBlock === true; else password">
                     <div class="login-modal-content-block">
                         <div class="login-modal-title">Login or Register</div>
-                        <div class="login-modal-form-wrapp">
+                        <form class="login-modal-form-wrapp" [formGroup]="emailForm" >
                             <label>Email or Mobile Number</label>
-                            <input type="text" [formControl]="username">
+                            <input type="text" formControlName="username">
                             <button class="podsliving-button w-100" id="cont_with_mobile"
                                 (click)="getUsername()">Continue</button>
                             <div class="or gray-text">or</div>
@@ -43,7 +43,7 @@
                                     src="../../../assets/images/facebook.svg" alt=""> Continue with Facebook</a>
                             <a class="continue-button"><img src="../../../assets/images/apple.svg" alt=""> Continue with
                                 Apple</a>
-                        </div>
+                        </form>
                     </div>
                 </div>
                 <!-- password block -->
@@ -53,7 +53,7 @@
                             <div class="login-modal-title">Register</div>
                             <div class="login-modal-form-wrapp">
                                 <label>CreatePassword</label>
-                                <input type="text" [formControl]="username">
+                                <input type="text" >
                                 <div class="gray-text input-text-block password-Hint">8 to 16 characters long
                                     including special character</div>
                                 <button class="podsliving-button w-100" id="cont_with_mobile"
