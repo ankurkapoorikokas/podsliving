@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
-
+import { Validators } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 @Component({
   selector: 'app-login',
@@ -10,7 +10,9 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 export class LoginComponent implements OnInit {
 
   emailForm = new FormGroup({
-    username : new FormControl('')
+    username : new FormControl('', [
+      Validators.required
+    ])
   });
   
   password = new FormControl('');
@@ -27,7 +29,7 @@ export class LoginComponent implements OnInit {
    * first screen button
    */
   getUsername(){
-    
+    console.log(this.emailForm.value);
     this.usernameBlock = false
     this.passwordBlock = true
   }
