@@ -4,7 +4,24 @@
 
 .errorClass{
     color: #FD0A0E;
-    font-size: 15px;
+    font-size: 14px;
     padding: 5px;
     display: inline-block;
+}
+.margin-top-invaild{    
+    margin-top: 0px !important;
+    visibility: hidden !important;
+}
+.margin-top-vaild{
+    margin-top: 30px;
+    visibility: display;
+}
+
+.button-remove-margin{
+    margin-top: 0px;
+}
+
+.removePadding{
+    padding-left: 0px;
+    padding-right: 0px;
 }

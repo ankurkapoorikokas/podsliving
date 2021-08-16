@@ -1,7 +1,7 @@
 <div class="modal-content">
     <div class="login-modal-wrapp">
         <!-- cross and back buttons -->
-        <a href="javascript:void(0);" data-dismiss="modal" aria-label="Close" class="close-button"><img
+        <a href="javascript:void(0);" aria-label="Close" class="close-button" (click)="activeModal.close('Close click')"><img
                 src="../../../assets/images/cross.svg" alt=""></a>
         <a href="javascript:void(0);" class="back-button" id="google_register_back_button"><img
                 src="../../../assets/images/back.svg" alt=""></a>
@@ -28,15 +28,23 @@
         <div class="login-modal-content-wrapp position-relative">
             <div id="login_content">
                 <div class="modal-right-content-block d-flex align-items-center"
-                    *ngIf="usernameBlock === true; else password">
+                    *ngIf="blockName === 'username'; else password">
                     <div class="login-modal-content-block">
                         <div class="login-modal-title">Login or Register</div>
-                        <form class="login-modal-form-wrapp" [formGroup]="emailForm" (ngSubmit)="getUsername()" >
+                        <form class="login-modal-form-wrapp" [formGroup]="emailForm" (ngSubmit)="submitUsername()" >
                             <label>Email or Mobile Number</label>
                             <input type="text" formControlName="username" >
-                            <div *ngIf="emailForm.controls.username.touched || emailForm.controls['username'].dirty  && emailForm.controls['username'].hasError('required')" [ngClass]="{'errorClass': true}">Please enter valid Email ID/Mobile number
+
+                            <div [ngClass]="{'margin-top-vaild':true,  'margin-top-invaild':emailForm.controls.username.touched || emailForm.controls['username'].dirty && emailForm.controls['username'].hasError('required') || emailForm.controls['username'].hasError('email') }"></div>
+                            <!-- check error -->
+                            <div *ngIf="!emailForm.valid && emailForm.controls.username.touched || emailForm.controls['username'].dirty ">
+                                <small *ngIf="emailForm.controls['username'].hasError('required') || emailForm.controls['username'].hasError('email') " [ngClass]="{'errorClass': true}">
+                                    Please enter valid Email ID/Mobile number
+                                </small>
                             </div>
-                            <button class="podsliving-button w-100" id="cont_with_mobile"
+                            <!--  -->
+                            <div [ngClass]="{'margin-top-vaild':emailForm.valid }"></div>
+                            <button [ngClass]="{'podsliving-button':true, 'w-100': true, 'button-remove-margin': true }" id="cont_with_mobile"
                                 >Continue</button>
                             <div class="or gray-text">or</div>
                             <a class="continue-button" id="cont_with_goggle"><img
@@ -50,29 +58,48 @@
                 </div>
                 <!-- password block -->
                 <ng-template #password>
-                    <div class="modal-right-content-block d-flex" *ngIf="passwordBlock === true; else registerAs">
-                        <div class="login-modal-content-block">
-                            <div class="login-modal-title">Register</div>
-                            <div class="login-modal-form-wrapp">
+                    <div class="modal-right-content-block d-flex" *ngIf="blockName === 'password'; else registerAs">
+                        <div class="login-modal-content-block">                  
+                            <div class="login-modal-title">{{operationType | titlecase}}</div>
+                            <form class="login-modal-form-wrapp" [formGroup]="passwordForm" (ngSubmit)="submitPassword()">
                                 <label>CreatePassword</label>
-                                <input type="text" >
+                                <input type="text" formControlName="password" >
                                 <div class="gray-text input-text-block password-Hint">8 to 16 characters long
                                     including special character</div>
-                                <button class="podsliving-button w-100" id="cont_with_mobile"
-                                    (click)="getPassword()">Continue</button>
-                            </div>
+                                    <div [ngClass]="{'margin-top-vaild':true,  'margin-top-invaild':passwordForm.controls.password.touched || passwordForm.controls['password'].dirty && passwordForm.controls['password'].hasError('required') || passwordForm.controls['password'].hasError('minlength') || passwordForm.controls['password'].hasError('maxlength') }"></div>
+                           <!-- Password validation -->
+                                <div *ngIf="!passwordForm.invalid || passwordForm.controls.password.touched || passwordForm.controls['password'].dirty">
+                                    <span *ngIf="passwordForm.controls['password'].hasError('required') ; else paswordMinlength" [ngClass]="{'errorClass': true, 'w-100': true}">
+                                        Password is required.
+                                    </span>
+                                    <ng-template #paswordMinlength>
+                                        <span *ngIf="passwordForm.controls['password'].hasError('minlength'); else paswordMaxlength" [ngClass]="{'errorClass': true, 'w-100': true}">
+                                            Password should contain atleast 8 characters.
+                                        </span>
+                                    </ng-template>
+                                    <ng-template #paswordMaxlength>
+                                    <span *ngIf="passwordForm.controls['password'].hasError('maxlength')" [ngClass]="{'errorClass': true, 'w-100': true}">
+                                        Password should contain max 16 characters.
+                                    </span>
+                                    </ng-template>
+                                </div>
+                                <!--  -->
+                                <div [ngClass]="{'margin-top-vaild':passwordForm.valid }"></div>
+                                <button class="podsliving-button w-100 button-remove-margin" id="cont_with_mobile"
+                                    >Continue</button>
+                            </form>
                         </div>
                     </div>
                 </ng-template>
                 <!-- register process continue/ login finish -->
                 <!-- register as -->
                 <ng-template #registerAs>
-                    <div class="modal-right-content-block d-flex align-items-center">
+                    <div class="modal-right-content-block d-flex align-items-center" *ngIf="blockName === 'role'; else registerDetail">
                         <div class="login-modal-content-block">
                             <div class="login-modal-title">Register as</div>
                             <div class="login-modal-form-wrapp">
                                 <div class="row m-0">
-                                    <div class="col-md-12 register-as-block">
+                                    <div class="col-md-12 register-as-block removePadding" (click)="selectUserRole(this.role.data[0].id)">
                                         <label class="radio-img">
                                             <input type="radio" name="layout" />
                                             <div class="image d-flex">
@@ -87,7 +114,7 @@
                                             </div>
                                         </label>
                                     </div>
-                                    <div class="col-md-12 register-as-block">
+                                    <div class="col-md-12 register-as-block removePadding" (click)="selectUserRole(this.role.data[1].id)">
                                         <label class="radio-img">
                                             <input type="radio" name="layout" />
                                             <div class="image d-flex">
@@ -102,7 +129,7 @@
                                             </div>
                                         </label>
                                     </div>
-                                    <div class="col-md-12 register-as-block">
+                                    <div class="col-md-12 register-as-block removePadding" (click)="selectUserRole(this.role.data[2].id)">
                                         <label class="radio-img">
                                             <input type="radio" name="layout" />
                                             <div class="image d-flex">
@@ -119,13 +146,133 @@
                                     </div>
                                     <div class="col-md-12 form-block p-0">
                                         <button class="podsliving-button w-100"
-                                            id="register_as_continue_button">Continue</button>
+                                            (click)="submitUserRole()">Continue</button>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </ng-template>
+                <!-- last page of modal -->
+                <ng-template #registerDetail>
+                    
+                        <div class="modal-right-content-block d-flex">
+                            <div class="login-modal-content-block">
+                                <div class="login-modal-title">Register</div>
+                        <form class="login-modal-form-wrapp" [formGroup]="registerForm">
+                            <div class="row">
+                                <div class="col-md-12 form-block" >
+                                    <label>Title</label>
+                                <select class="form-select form-select-lg mb-3" aria-label=".form-select-lg example" formControlName="title">
+                                    <option value="">Mr.</option>
+                                    <option value="">Miss.</option>
+                                    <option value="">Master</option>
+                                    <option value="">Lorem ipsum</option>
+                                    <option value="">Lorem ipsum</option>
+                                </select>
+                                </div>
+                                <div class="col-md-12 form-block">
+                                    <label>First name</label>
+                                    <input type="text" formControlName="firstName">
+                                    <div>
+                                        First name is required
+                                    </div>
+                                </div>
+                                <div class="col-md-12 form-block">
+                                    <label>Middle name</label>
+                                    <input type="text" formControlName="middleName">
+                                </div>
+                                <div class="col-md-12 form-block">
+                                    <label>Last name</label>
+                                    <input type="text" formControlName="lastName">
+                                </div>
+                                <div class="col-md-12 form-block">
+                                    <label>Phone Number</label>
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <select class="form-select form-select-lg mb-3">
+                                                <option value="">+01</option>
+                                                <option value="">+01</option>
+                                                <option value="">+01</option>
+                                                <option value="">+01</option>
+                                                <option value="">+01</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-8">
+                                            <input type="number" formControlName="phoneNumber">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-12 form-block">
+                                    <label>Email Address</label>
+                                    <input type="email" formControlName="userName">
+                                </div>
+                                <div class="col-md-12 form-block">
+                                    <div class="d-flex align-items-center justify-content-between">
+                                        <label>Date of Birth</label>
+                                        <span class="gray-texy">Optional</span>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <select class="form-select form-select-lg mb-3">
+                                                <option value="">Date</option>
+                                                <option value="">Date</option>
+                                                <option value="">Date</option>
+                                                <option value="">Date</option>
+                                                <option value="">Date</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <select class="form-select form-select-lg mb-3">
+                                                <option value="">Month</option>
+                                                <option value="">Month</option>
+                                                <option value="">Month</option>
+                                                <option value="">Month</option>
+                                                <option value="">Month</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <select class="form-select form-select-lg mb-3">
+                                                <option value="">Year</option>
+                                                <option value="">Year</option>
+                                                <option value="">Year</option>
+                                                <option value="">Year</option>
+                                                <option value="">Year</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-12 form-block">
+                                    <label>Gender</label>
+                                    <div class="row">
+                                        <div class="col-md-3">
+                                            <input type="radio" id="male" name="gender" checked formControlName="gender">
+                                            <label for="male">Male</label>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <input type="radio" id="female" name="gender">
+                                            <label for="female">Female</label>
+                                        </div>
+                                        <div class="col-md-5">
+                                            <input type="radio" id="don_not_prefer" name="gender" formControlName="gender">
+                                            <label for="don_not_prefer">Do not prefer</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-12 form-block">
+                                    <div class="checkbox">
+                                        <input type="checkbox" id="agree_register_form">
+                                        <label for="agree_register_form">Agree to <a href="#" class="red-text">Terms & Conditions</a></label>
+                                      </div>
+                                </div>
+                                <div class="col-md-12 form-block">
+                                    <a href="create-a-listing.html" class="podsliving-button w-100 button-disable" id="register_form_continut_button">Continue</a>
+                                </div>
+                            </div>
+                        </form>
+                            </div>
+                        </div>
+                          </ng-template>
             </div>
         </div>
     </div>
