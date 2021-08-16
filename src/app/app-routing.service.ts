@@ -3,9 +3,10 @@ import { CommonModule } from '@angular/common';
 import {Routes, RouterModule} from '@angular/router';
 
 import { AuthModule } from './auth/auth.module';
-
+import { HomeModule } from './home/home.module';
 const routes :Routes = [
-    { path: '', loadChildren: ()=> AuthModule }
+    { path: '', loadChildren: ()=>  HomeModule}
+    
 ]
 @NgModule({
     declarations: [],
