@@ -48,7 +48,11 @@ export class LoginComponent implements OnInit {
     userName: new FormControl("",
     [Validators.required, Validators.email]
     ),
-    dateOfBirth: new FormControl(""),
+    dateOfBirth: new FormGroup({
+      day : new FormControl("", [Validators.required]),
+      month: new FormControl("", [Validators.required]),
+      year: new FormControl("", [Validators.required])
+    }),
     gender: new FormControl("",[Validators.required])
   })
   
@@ -56,8 +60,15 @@ export class LoginComponent implements OnInit {
   blockName: string = "username"; // to check block
   role: any; //store user roles list
   operationType: string; // store operation login/register
-  roleSelected: number;
-  
+  roleSelected: number; // stores the roleid after selection in registered as section
+  days=[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,26,28,29,30,31]
+  months=['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+  years:number[] = [];
+  notFocused: boolean = false; // USED IN FIELDS TO CHECK WE FOCUSED OR NOT
+  submitted:boolean= false; // flag to deteact current form is submitted
+
+
+
   
   constructor(
     public activeModal: NgbActiveModal,
@@ -65,13 +76,16 @@ export class LoginComponent implements OnInit {
     ) { }
 
   ngOnInit(): void {  
+    this.calcYear();
   }
   /**
    * used to get username on click of continue button
    * first screen button
    */
   submitUsername(){
+    this.submitted = true;
     if(!this.emailForm.valid)return
+    
     let formData: FormData = new FormData(); 
     formData.append('email', this.emailForm.value.username);
     this.authService.uploadUser(GlobalConstants.checkemail,formData).subscribe(data=>{
@@ -82,7 +96,7 @@ export class LoginComponent implements OnInit {
         this.operationType = "login"
         this.blockName = "password"
       }
-      console.log(error.status);
+      alert(error.status);
     }
     )
     
@@ -132,4 +146,27 @@ export class LoginComponent implements OnInit {
       userName: this.emailForm.value.username
     })
    }
+
+   /**
+    * go to previous page
+    */
+    previousPage(){
+      if(this.blockName === "password"){
+        this.blockName = "username"
+      }else if(this.blockName === "role"){
+        this.blockName = "password"
+      }else if (this.blockName === "registerdetail"){
+        this.blockName = "role"
+      }
+
+    }
+    /**
+     * calculate year to current year
+     */
+    calcYear = ()=>{
+      for(let i:number=1950; i< new Date().getFullYear(); i++){
+        this.years.push(i);
+      }
+      return this.years;
+    }
 }

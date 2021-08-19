@@ -25,3 +25,12 @@
     padding-left: 0px;
     padding-right: 0px;
 }
+
+.back-button{
+    display: inline-block !important;
+}
+
+.form-block-invalid{
+    margin-bottom: 0 !important;
+}
+
