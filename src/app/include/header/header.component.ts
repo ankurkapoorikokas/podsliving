@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import {  NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { LoginComponent } from 'src/app/auth/login/login.component';
 @Component({
   selector: 'app-header',
@@ -15,6 +15,6 @@ export class HeaderComponent implements OnInit {
   public isMenuCollapsed = true;
 
   open(){
-    const modalRef = this.modalService.open(LoginComponent, { size: 'xl' });
+    const modalRef = this.modalService.open(LoginComponent, { windowClass : "myCustomModalClass" });
   }
 }

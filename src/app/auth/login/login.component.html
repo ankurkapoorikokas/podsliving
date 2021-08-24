@@ -24,71 +24,87 @@
                         <div class="login-modal-title">Login or Register</div>
                         <form class="login-modal-form-wrapp" [formGroup]="emailForm" (ngSubmit)="submitUsername()">
                             <label>Email or Mobile Number</label>
-                            <input type="text" formControlName="username" (focus)="notFocused=false; submitted=false" (focusout)="notFocused=true">
-                            <div
-                                [ngClass]="{'margin-top-vaild':true,  'margin-top-invaild':emailForm.controls.username.touched || emailForm.controls['username'].dirty && ((emailForm.controls['username'].hasError('required') || emailForm.controls['username'].hasError('email') ) && notFocused ) || submitted} ">
+                            <input type="text" formControlName="username" (focus)="notFocused=false; submitted=false"
+                                (focusout)="notFocused=true">
+                            <!-- validation block -->
+                            <div [ngClass]="{'error-block': true}">
+                                <span
+                                    *ngIf="!emailForm.valid && ( (emailForm.controls.username.touched || emailForm.controls['username'].dirty ) && notFocused ) || submitted">
+                                    <small
+                                        *ngIf="emailForm.controls['username'].hasError('required') || emailForm.controls['username'].hasError('pattern') "
+                                        [ngClass]="{'errorClass': true}">
+                                        Please enter valid Email ID/Mobile number
+                                    </small>
+                                </span>
                             </div>
-                            <!-- check error -->
-                            <div
-                                *ngIf="!emailForm.valid && ( (emailForm.controls.username.touched || emailForm.controls['username'].dirty ) && notFocused ) || submitted">
-                                <small
-                                    *ngIf="emailForm.controls['username'].hasError('required') || emailForm.controls['username'].hasError('email') "
-                                    [ngClass]="{'errorClass': true}">
-                                    Please enter valid Email ID/Mobile number
-                                </small>
-                            </div>
-                            <!--  -->
-                            <div [ngClass]="{'margin-top-vaild':emailForm.valid || !notFocused }"></div>
                             <button [ngClass]="{'podsliving-button':true, 'w-100': true, 'button-remove-margin': true }"
                                 id="cont_with_mobile">Continue</button>
-                            <div class="or gray-text">or</div>
-                            <a class="continue-button" id="cont_with_goggle"><img
-                                    src="../../../assets/images/google.svg" alt=""> Continue with Google</a>
-                            <a class="continue-button" id="continue_with_social"><img
-                                    src="../../../assets/images/facebook.svg" alt=""> Continue with Facebook</a>
-                            <a class="continue-button"><img src="../../../assets/images/apple.svg" alt=""> Continue with
-                                Apple</a>
                         </form>
+                        <div class="or gray-text">or</div>
+                        <a class="continue-button" id="cont_with_goggle"><img src="../../../assets/images/google.svg"
+                                alt=""> Continue with Google</a>
+                        <a class="continue-button" id="continue_with_social"><img
+                                src="../../../assets/images/facebook.svg" alt=""> Continue with Facebook</a>
+                        <a class="continue-button"><img src="../../../assets/images/apple.svg" alt=""> Continue with
+                            Apple</a>
                     </div>
                 </div>
+
                 <!-- password block -->
                 <ng-template #password>
-                    <div class="modal-right-content-block d-flex" *ngIf="blockName === 'password'; else registerAs">
+                    <div class="modal-right-content-block d-flex" *ngIf="blockName === 'password'; else oneTimePassword">
                         <div class="login-modal-content-block">
                             <div class="login-modal-title">{{operationType | titlecase}}</div>
                             <form class="login-modal-form-wrapp" [formGroup]="passwordForm"
                                 (ngSubmit)="submitPassword()">
-                                <label><span *ngIf = "operationType === 'register'">Create </span>Password</label>
-                                <input type="text" formControlName="password" (focus)="notFocused=false; submitted=false" (focusout)="notFocused=true">
-                                <div class="gray-text input-text-block password-Hint">8 to 16 characters long
-                                    </div>
-                                <div
-                                    [ngClass]="{'margin-top-vaild':true,  'margin-top-invaild':passwordForm.controls.password.touched || passwordForm.controls['password'].dirty && ( passwordForm.controls['password'].hasError('required') || passwordForm.controls['password'].hasError('minlength') || passwordForm.controls['password'].hasError('maxlength') && notFocused ) || submitted }">
+                                <label><span *ngIf="operationType === 'register'">Create </span>Password</label>
+                                <input type="password" formControlName="password"
+                                    (focus)="notFocused=false; submitted=false" (focusout)="notFocused=true">
+                                <div class="gray-text input-text-block password-Hint">8 to 16 characters long including
+                                    special character
                                 </div>
-                                <!-- Password validation -->
-                                <div
-                                    *ngIf="!passwordForm.invalid || passwordForm.controls.password.touched || passwordForm.controls['password'].dirty">
+                                <div [ngClass]="{'error-block':true}">
                                     <span
-                                        *ngIf="( passwordForm.controls['password'].hasError('required') && notFocused ) || submitted ; else paswordMinlength"
-                                        [ngClass]="{'errorClass': true, 'w-100': true}">
-                                        Password is required.
-                                    </span>
-                                    <ng-template #paswordMinlength>
+                                        *ngIf="!passwordForm.invalid || (passwordForm.controls.password.touched || passwordForm.controls['password'].dirty  && notFocused ) || submitted">
                                         <span
-                                            *ngIf="( passwordForm.controls['password'].hasError('minlength') && notFocused ) || submitted; else paswordMaxlength"
+                                            *ngIf="passwordForm.controls['password'].hasError('required') || passwordForm.controls['password'].hasError('minlength') || passwordForm.controls['password'].hasError('maxlength') || passwordForm.controls['password'].hasError('pattern')"
                                             [ngClass]="{'errorClass': true, 'w-100': true}">
-                                            Password should contain atleast 8 characters.
+                                            Password is invalid.
                                         </span>
-                                    </ng-template>
-                                    <ng-template #paswordMaxlength>
-                                        <span *ngIf="( passwordForm.controls['password'].hasError('maxlength') && notFocused ) || submitted"
-                                            [ngClass]="{'errorClass': true, 'w-100': true}">
-                                            Password should contain max 16 characters.
+                                        <span *ngIf="serverError" [ngClass]="{'errorClass': true, 'w-100': true}">
+                                            {{serverError}}
                                         </span>
-                                    </ng-template>
+                                    </span>
                                 </div>
-                                <!--  -->
-                                <div [ngClass]="{'margin-top-vaild':passwordForm.valid || !notFocused }"></div>
+                                <button class="podsliving-button w-100 button-remove-margin"
+                                    id="cont_with_mobile">Continue</button>
+                            </form>
+                        </div>
+                    </div>
+                </ng-template>
+                <!-- otp page -->
+                <ng-template #oneTimePassword>
+                    <div class="modal-right-content-block d-flex" *ngIf="blockName === 'oneTimePassword'; else registerAs">
+                        <div class="login-modal-content-block">
+                            <div class="login-modal-title">{{operationType | titlecase}}</div>
+                            <form class="login-modal-form-wrapp" [formGroup]="otpForm"
+                                (ngSubmit)="submitOtp()">
+                                <label>Enter OTP</label>
+                                <input type="text" formControlName="otp"
+                                    (focus)="notFocused=false; submitted=false" >
+                                <div [ngClass]="{'error-block':true}">
+                                    <span
+                                        *ngIf="!otpForm.invalid || (otpForm.controls.otp.touched || otpForm.controls['otp'].dirty  && notFocused ) || submitted">
+                                        <span
+                                            *ngIf="otpForm.controls['otp'].hasError('required')"
+                                            [ngClass]="{'errorClass': true, 'w-100': true}">
+                                            Invalid OTP.
+                                        </span>
+                                        <span *ngIf="serverError" [ngClass]="{'errorClass': true, 'w-100': true}">
+                                            {{serverError}}
+                                        </span>
+                                    </span>
+                                </div>
                                 <button class="podsliving-button w-100 button-remove-margin"
                                     id="cont_with_mobile">Continue</button>
                             </form>
@@ -305,29 +321,30 @@
                                                 <label for="male">Male</label>
                                             </div>
                                             <div class="col-md-4">
-                                                <input type="radio" id="female" name="gender" value="Female" formControlName="gender">
+                                                <input type="radio" id="female" name="gender" value="Female"
+                                                    formControlName="gender">
                                                 <label for="female">Female</label>
                                             </div>
                                             <div class="col-md-5">
-                                                <input type="radio" id="don_not_prefer" name="gender" value="Do not prefer"
-                                                    formControlName="gender">
+                                                <input type="radio" id="don_not_prefer" name="gender"
+                                                    value="Do not prefer" formControlName="gender">
                                                 <label for="don_not_prefer">Do not prefer</label>
                                             </div>
                                             <!-- gender validation -->
                                             <div
-                                            [ngClass]="{'form-block':true,  'form-block-invalid':registerForm.controls.gender.touched || registerForm.controls['gender'].dirty && registerForm.controls['gender'].hasError('required')}">
-                                        </div>
-                                        <div
-                                            *ngIf="!registerForm.invalid || registerForm.controls.gender.touched || registerForm.controls['gender'].dirty">
-                                            <div *ngIf="registerForm.controls['gender'].hasError('required')"
-                                                [ngClass]="{'errorClass': true, 'w-100': true}">
-                                                Gender is required.
+                                                [ngClass]="{'form-block':true,  'form-block-invalid':registerForm.controls.gender.touched || registerForm.controls['gender'].dirty && registerForm.controls['gender'].hasError('required')}">
                                             </div>
-                                        </div>
-                                        <div
-                                            [ngClass]="{'form-block': !registerForm.controls['gender'].hasError('required')}">
-                                        </div>
-                                        <!-- ---- -->
+                                            <div
+                                                *ngIf="!registerForm.invalid || registerForm.controls.gender.touched || registerForm.controls['gender'].dirty">
+                                                <div *ngIf="registerForm.controls['gender'].hasError('required')"
+                                                    [ngClass]="{'errorClass': true, 'w-100': true}">
+                                                    Gender is required.
+                                                </div>
+                                            </div>
+                                            <div
+                                                [ngClass]="{'form-block': !registerForm.controls['gender'].hasError('required')}">
+                                            </div>
+                                            <!-- ---- -->
                                         </div>
                                     </div>
                                     <div class="col-md-12 form-block">

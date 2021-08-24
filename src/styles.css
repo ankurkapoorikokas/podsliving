@@ -91,7 +91,6 @@ h3 {font-size: 20px;}
   width: 88%; 
   z-index: 1;
 }
-.login-modal-title {margin-bottom: 25px; line-height: 1.2;}
 .promotion-content-wrapp {left: 100px;}
 .landing-banner-content-wrapp {width: 100%;}
 .promotion-banner-wrapp {height: 450px; border-radius: 10px;}
@@ -162,10 +161,7 @@ button.owl-next.disabled {
 .make-us-special-block h3 {line-height: 1.2; width: 80%; margin: 0 auto; margin-top: 25px; margin-bottom: 16px;}
 .make-us-special-image-block {height: 40px; display: flex; align-items: center; justify-content: center;}
 .login-modal-form-wrapp input {height: 48px;}
-.continue-button {display: block; width: 100%; margin-bottom: 15px; border: 1px solid #D3D3D3; border-radius: 4px; display: flex; align-items: center; justify-content: center; height: 48px; text-decoration: none !important;}
-.continue-button:nth-last-child(1) {margin-bottom: 0;}
-.or {position: relative; margin: 30px 0; text-align: center;}
-.continue-button img {margin-right: 15px;}
+
 .or::before,
 .or::after {
   content: '';
@@ -834,4 +830,14 @@ h3 {font-size: 16px;}
   .type-spc-block {margin-right: 15px;}
   .type-of-space-block span {font-size: 12px;}
   .create-listing-form {padding: 0 50px;}
+}
+
+.myCustomModalClass .modal-dialog {
+  max-width: 65%;
+}
+
+@media only screen and (max-width: 600px) {
+  .myCustomModalClass .modal-dialog {
+    max-width: 100%;
+  }
 }

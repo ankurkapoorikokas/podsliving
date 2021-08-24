@@ -1,3 +1,16 @@
+
+.error-block{
+    height: 30px;
+}
+
+.login-modal-title {margin-bottom: 20px; line-height: 1.2;}
+.or {position: relative; margin: 20px 0; text-align: center;}
+.continue-button {display: block; width: 100%; margin-bottom: 12px; border: 1px solid #D3D3D3; border-radius: 4px; display: flex; align-items: center; justify-content: center; height: 48px; text-decoration: none !important;}
+.continue-button:nth-last-child(1) {margin-bottom: 0;}
+
+.continue-button img {margin-right: 15px;}
+
+
 .password-Hint{
     display: inline-block;
 }

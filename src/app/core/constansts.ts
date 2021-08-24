@@ -3,7 +3,8 @@ export class GlobalConstants {
     public static checkemail: string = "checkemail";
     public static login: string ="login";
     public static getRoles: string="get/roles";
-
+    public static register: string = "register";
+    public static verifyOtp: string = "verify/otp";
 
     
 
