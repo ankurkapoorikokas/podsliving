@@ -24,8 +24,7 @@
                         <div class="login-modal-title">Login or Register</div>
                         <form class="login-modal-form-wrapp" [formGroup]="emailForm" (ngSubmit)="submitUsername()">
                             <label>Email or Mobile Number</label>
-                            <input type="text" formControlName="username" (focus)="notFocused=false" (focusout)="notFocused=true">
-
+                            <input type="text" formControlName="username" (focus)="notFocused=false; submitted=false" (focusout)="notFocused=true">
                             <div
                                 [ngClass]="{'margin-top-vaild':true,  'margin-top-invaild':emailForm.controls.username.touched || emailForm.controls['username'].dirty && ((emailForm.controls['username'].hasError('required') || emailForm.controls['username'].hasError('email') ) && notFocused ) || submitted} ">
                             </div>
@@ -39,7 +38,7 @@
                                 </small>
                             </div>
                             <!--  -->
-                            <div [ngClass]="{'margin-top-vaild':emailForm.valid || !notFocused}"></div>
+                            <div [ngClass]="{'margin-top-vaild':emailForm.valid || !notFocused }"></div>
                             <button [ngClass]="{'podsliving-button':true, 'w-100': true, 'button-remove-margin': true }"
                                 id="cont_with_mobile">Continue</button>
                             <div class="or gray-text">or</div>
@@ -59,37 +58,37 @@
                             <div class="login-modal-title">{{operationType | titlecase}}</div>
                             <form class="login-modal-form-wrapp" [formGroup]="passwordForm"
                                 (ngSubmit)="submitPassword()">
-                                <label>CreatePassword</label>
-                                <input type="text" formControlName="password">
+                                <label><span *ngIf = "operationType === 'register'">Create </span>Password</label>
+                                <input type="text" formControlName="password" (focus)="notFocused=false; submitted=false" (focusout)="notFocused=true">
                                 <div class="gray-text input-text-block password-Hint">8 to 16 characters long
-                                    including special character</div>
+                                    </div>
                                 <div
-                                    [ngClass]="{'margin-top-vaild':true,  'margin-top-invaild':passwordForm.controls.password.touched || passwordForm.controls['password'].dirty && passwordForm.controls['password'].hasError('required') || passwordForm.controls['password'].hasError('minlength') || passwordForm.controls['password'].hasError('maxlength') }">
+                                    [ngClass]="{'margin-top-vaild':true,  'margin-top-invaild':passwordForm.controls.password.touched || passwordForm.controls['password'].dirty && ( passwordForm.controls['password'].hasError('required') || passwordForm.controls['password'].hasError('minlength') || passwordForm.controls['password'].hasError('maxlength') && notFocused ) || submitted }">
                                 </div>
                                 <!-- Password validation -->
                                 <div
                                     *ngIf="!passwordForm.invalid || passwordForm.controls.password.touched || passwordForm.controls['password'].dirty">
                                     <span
-                                        *ngIf="passwordForm.controls['password'].hasError('required') ; else paswordMinlength"
+                                        *ngIf="( passwordForm.controls['password'].hasError('required') && notFocused ) || submitted ; else paswordMinlength"
                                         [ngClass]="{'errorClass': true, 'w-100': true}">
                                         Password is required.
                                     </span>
                                     <ng-template #paswordMinlength>
                                         <span
-                                            *ngIf="passwordForm.controls['password'].hasError('minlength'); else paswordMaxlength"
+                                            *ngIf="( passwordForm.controls['password'].hasError('minlength') && notFocused ) || submitted; else paswordMaxlength"
                                             [ngClass]="{'errorClass': true, 'w-100': true}">
                                             Password should contain atleast 8 characters.
                                         </span>
                                     </ng-template>
                                     <ng-template #paswordMaxlength>
-                                        <span *ngIf="passwordForm.controls['password'].hasError('maxlength')"
+                                        <span *ngIf="( passwordForm.controls['password'].hasError('maxlength') && notFocused ) || submitted"
                                             [ngClass]="{'errorClass': true, 'w-100': true}">
                                             Password should contain max 16 characters.
                                         </span>
                                     </ng-template>
                                 </div>
                                 <!--  -->
-                                <div [ngClass]="{'margin-top-vaild':passwordForm.valid }"></div>
+                                <div [ngClass]="{'margin-top-vaild':passwordForm.valid || !notFocused }"></div>
                                 <button class="podsliving-button w-100 button-remove-margin"
                                     id="cont_with_mobile">Continue</button>
                             </form>

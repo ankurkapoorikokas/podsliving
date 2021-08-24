@@ -91,12 +91,15 @@ export class LoginComponent implements OnInit {
     this.authService.uploadUser(GlobalConstants.checkemail,formData).subscribe(data=>{
       this.operationType ="register"
       this.blockName = "password"
+      this.submitted = false;
     },error=>{
       if(error.status === 422){
-        this.operationType = "login"
-        this.blockName = "password"
+        this.operationType = "log in"
+        this.blockName = "password" 
+        this.submitted = false;
+      }else{
+        alert(error);
       }
-      alert(error.status);
     }
     )
     
@@ -108,7 +111,7 @@ export class LoginComponent implements OnInit {
   submitPassword(){
     if(!this.passwordForm.valid) return
     let formData: FormData = new FormData();
-    if(this.operationType == "login"){
+    if(this.operationType == "log in"){
     formData.append('username', this.emailForm.value.username);
     formData.append('password', this.passwordForm.value.password);
       this.authService.uploadUser(GlobalConstants.login,formData).subscribe(data=>{
@@ -116,6 +119,8 @@ export class LoginComponent implements OnInit {
           console.log(data);
           this.activeModal.close('Close click')      
         }
+      }, error=>{
+        alert(error.error.errorMsg);
       })
       
     }else{
@@ -164,7 +169,7 @@ export class LoginComponent implements OnInit {
      * calculate year to current year
      */
     calcYear = ()=>{
-      for(let i:number=1950; i< new Date().getFullYear(); i++){
+      for(let i:number=new Date().getFullYear(); i> 1949 ; i--){
         this.years.push(i);
       }
       return this.years;
