@@ -2,6 +2,14 @@
 .error-block{
     height: 30px;
 }
+.mb-3{
+    margin-bottom:unset !important;
+}
+
+.positionEye{
+    position: absolute;
+    right: 5px;
+}
 
 .login-modal-title {margin-bottom: 20px; line-height: 1.2;}
 .or {position: relative; margin: 20px 0; text-align: center;}
@@ -45,5 +53,9 @@
 
 .form-block-invalid{
     margin-bottom: 0 !important;
+}
+
+.disabledButtonColor{
+    background-color: #e0d0d0;
 }
 

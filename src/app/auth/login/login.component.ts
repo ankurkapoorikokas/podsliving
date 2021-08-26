@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input,EventEmitter, Output } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
 import { Validators } from '@angular/forms';
 
@@ -6,6 +6,8 @@ import { AuthService } from 'src/app/core/service/auth.service';
 
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { GlobalConstants } from 'src/app/core/constansts';
+import { isEmpty } from 'rxjs/operators';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-login',
@@ -35,6 +37,8 @@ export class LoginComponent implements OnInit {
     otp: new FormControl('',
     [
     Validators.required,
+    Validators.minLength(6),
+    Validators.maxLength(6)
     ]
     )
   })
@@ -62,9 +66,9 @@ export class LoginComponent implements OnInit {
       month: new FormControl("", [Validators.required]),
       year: new FormControl("", [Validators.required])
     }),
-    gender: new FormControl("", [Validators.required])
+    gender: new FormControl("", [Validators.required]),
+    termsAndCondition: new FormControl("", [Validators.required])
   })
-
 
   blockName: string = "username"; // to check block
   role: any; //store user roles list
@@ -79,6 +83,7 @@ export class LoginComponent implements OnInit {
   serverError: string
   EMAIL_REGEX = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
   apiResponse: any;
+  hide:boolean=true;
 
 
   constructor(
@@ -102,22 +107,19 @@ export class LoginComponent implements OnInit {
     if (this.EMAIL_REGEX.test(userName)) {
       this.authService.uploadUser(GlobalConstants.checkemail, this.formData).subscribe(data => {
         this.operationType = "register"
-        this.blockName = "password"
-        this.submitted = false;
       }, error => {
         if (error.status === 422) {
-          this.operationType = "log in"
-          this.blockName = "password"
-          this.submitted = false;
-        } else { alert(error.error.errorMsg); }
+          this.operationType = "log in"  
+        } else { alert(error.error.errorMsg); return }
       })
+      this.blockName = "password"
+      this.submitted = false;
     } else {
       // phone no is entered check existing user or new user
       this.authService.uploadUser(GlobalConstants.login, this.formData).subscribe(data => {
         if (data) {
           this.apiResponse = data;
           this.operationType = "log in"
-          console.log(this.apiResponse);
         }
       }, error => {
         if (error.status === 422) {
@@ -140,14 +142,17 @@ export class LoginComponent implements OnInit {
    * second screen continue button screen button
    */
   submitPassword() {
+    this.submitted = true;
     if (!this.passwordForm.valid) return
-    let formData: FormData = new FormData();
+    this.formData.append('username', this.emailForm.value.username);
+    this.formData.append('password', this.passwordForm.value.password);
     if (this.operationType == "log in") {
-      formData.append('username', this.emailForm.value.username);
-      formData.append('password', this.passwordForm.value.password);
-      this.authService.uploadUser(GlobalConstants.login, formData).subscribe(data => {
+      this.authService.uploadUser(GlobalConstants.login, this.formData).subscribe(data => {
         if (data) {
-          console.log(data);
+          this.apiResponse=data
+          let token = this.apiResponse.token
+          this.activeModal.close(token)
+          localStorage.setItem('token', token) 
           this.activeModal.close('Close click')
           this.submitted = false;
         }
@@ -158,14 +163,34 @@ export class LoginComponent implements OnInit {
       })
 
     } else {
-      this.authService.getUser(GlobalConstants.getRoles).subscribe(data => {
-        if (data) {
-          this.role = data
+      // this.authService.uploadUser(GlobalConstants.register,this.formData).subscribe(data=>{
+      //   if(data){
+      //     this.apiResponse=data;
+      //     localStorage.setItem('token', this.apiResponse.data.token);
+      //   }
+      // }, next=>{
+      //   this.authService.getUser(GlobalConstants.getRoles).subscribe(data => {
+      //     if (data) {
+      //       this.role = data
+      //       this.blockName = "role"
+      //       this.submitted = false;
+      //     }
+      //   })  
+      // })
+      forkJoin([
+        this.authService.uploadUser(GlobalConstants.register,this.formData),
+        this.authService.getUser(GlobalConstants.getRoles)
+      ]).subscribe(([data1, data2])=>{
+        if(data1){
+          this.apiResponse=data1;
+          localStorage.setItem('token', this.apiResponse.data.token);
+        }
+        if(data2){
+          this.role = data2
           this.blockName = "role"
           this.submitted = false;
         }
       })
-
     }
 
   }
@@ -183,10 +208,13 @@ export class LoginComponent implements OnInit {
      formData.append("otp_id",otpId)
      formData.append("otp",this.otpForm.value.otp)
     this.authService.uploadUser(GlobalConstants.verifyOtp,formData).subscribe(data=>{
-      console.log(data);
+      if(data){
+        this.apiResponse = data;
       //  check login or register
     if(this.operationType = "log in"){
-      this.activeModal.close('Close click')
+      let token = this.apiResponse.data.token
+      this.activeModal.close(token)
+      localStorage.setItem('token', token)
     }else{
       this.authService.getUser(GlobalConstants.getRoles).subscribe(data => {
         if (data) {
@@ -196,6 +224,8 @@ export class LoginComponent implements OnInit {
         }
       })
     }
+      }
+      
     })
    }
 
@@ -209,6 +239,7 @@ export class LoginComponent implements OnInit {
    * used to submit user role and navigate to next register page
    */
   submitUserRole() {
+    this.submitted = true;
     if (!this.roleSelected) return
     this.blockName = "registerdetail"
     this.submitted = true
@@ -230,7 +261,6 @@ export class LoginComponent implements OnInit {
     } else if (this.blockName === "registerdetail") {
       this.blockName = "role"
     }
-
   }
   /**
    * calculate year to current year

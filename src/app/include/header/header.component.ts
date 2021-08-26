@@ -9,12 +9,32 @@ import { LoginComponent } from 'src/app/auth/login/login.component';
 export class HeaderComponent implements OnInit {
 
   constructor(private modalService: NgbModal) { }
+  
 
   ngOnInit(): void {
+    let token=localStorage.getItem('token');
+    if(token){
+      this.loginToken=token
+    }
   }
   public isMenuCollapsed = true;
+  public loginToken: string = "logout";
 
+  /**
+   * used to open login model
+   */
   open(){
     const modalRef = this.modalService.open(LoginComponent, { windowClass : "myCustomModalClass" });
+    modalRef.result.then((result)=>{
+      if(result !=="Close click")
+      this.loginToken = result;
+    })
+  }
+/**
+ * logout
+ */
+  logout(){
+    localStorage.clear();
+    this.loginToken="logout";
   }
 }

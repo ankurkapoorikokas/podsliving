@@ -4,7 +4,7 @@ import { CommonModule } from '@angular/common';
 import {FlexLayoutModule} from '@angular/flex-layout';
 import { ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
-
+import { MaterialModule } from './material.module';
 
 @NgModule({
   declarations: [],
@@ -12,12 +12,14 @@ import { HttpClientModule } from '@angular/common/http';
     CommonModule,
     FlexLayoutModule,
     ReactiveFormsModule,
-    HttpClientModule
+    HttpClientModule,
+    MaterialModule
   ],
   exports: [
     FlexLayoutModule,
     ReactiveFormsModule,
-    HttpClientModule
+    HttpClientModule,
+    MaterialModule
   ]
 })
 export class SharedModule { }

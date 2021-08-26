@@ -52,14 +52,19 @@
 
                 <!-- password block -->
                 <ng-template #password>
-                    <div class="modal-right-content-block d-flex" *ngIf="blockName === 'password'; else oneTimePassword">
+                    <div class="modal-right-content-block d-flex"
+                        *ngIf="blockName === 'password'; else oneTimePassword">
                         <div class="login-modal-content-block">
                             <div class="login-modal-title">{{operationType | titlecase}}</div>
                             <form class="login-modal-form-wrapp" [formGroup]="passwordForm"
                                 (ngSubmit)="submitPassword()">
                                 <label><span *ngIf="operationType === 'register'">Create </span>Password</label>
-                                <input type="password" formControlName="password"
-                                    (focus)="notFocused=false; submitted=false" (focusout)="notFocused=true">
+                                <div fxLayout="row" fxLayoutAlign="start center" [ngClass]="{'position-relative':true}">
+                                    <input matInput [type]="hide ? 'password' : 'text'" formControlName="password"
+                                        (focus)="notFocused=false; submitted=false" (focusout)="notFocused=true">
+                                    <mat-icon matSuffix (click)="hide = !hide" [ngClass]="{'positionEye': true}">{{hide
+                                        ? 'visibility_off' : 'visibility'}}</mat-icon>
+                                </div>
                                 <div class="gray-text input-text-block password-Hint">8 to 16 characters long including
                                     special character
                                 </div>
@@ -84,19 +89,19 @@
                 </ng-template>
                 <!-- otp page -->
                 <ng-template #oneTimePassword>
-                    <div class="modal-right-content-block d-flex" *ngIf="blockName === 'oneTimePassword'; else registerAs">
+                    <div class="modal-right-content-block d-flex"
+                        *ngIf="blockName === 'oneTimePassword'; else registerAs">
                         <div class="login-modal-content-block">
                             <div class="login-modal-title">{{operationType | titlecase}}</div>
-                            <form class="login-modal-form-wrapp" [formGroup]="otpForm"
-                                (ngSubmit)="submitOtp()">
+                            <form class="login-modal-form-wrapp" [formGroup]="otpForm" (ngSubmit)="submitOtp()">
                                 <label>Enter OTP</label>
-                                <input type="text" formControlName="otp"
-                                    (focus)="notFocused=false; submitted=false" >
+                                <input type="text" formControlName="otp" (focus)="notFocused=false; submitted=false"
+                                    type="password">
                                 <div [ngClass]="{'error-block':true}">
                                     <span
                                         *ngIf="!otpForm.invalid || (otpForm.controls.otp.touched || otpForm.controls['otp'].dirty  && notFocused ) || submitted">
                                         <span
-                                            *ngIf="otpForm.controls['otp'].hasError('required')"
+                                            *ngIf="otpForm.controls['otp'].hasError('required') || passwordForm.controls['password'].hasError('minlength') || passwordForm.controls['password'].hasError('maxlength')"
                                             [ngClass]="{'errorClass': true, 'w-100': true}">
                                             Invalid OTP.
                                         </span>
@@ -168,8 +173,14 @@
                                             </div>
                                         </label>
                                     </div>
+                                    <!-- display error -->
+                                    <div [ngClass]="{'error-block': true}">
+                                        <span *ngIf="submitted" [ngClass]="{'errorClass': true, 'w-100': true}">
+                                            Please select role.
+                                        </span>
+                                    </div>
                                     <div class="col-md-12 form-block p-0">
-                                        <button class="podsliving-button w-100"
+                                        <button class="podsliving-button w-100 button-remove-margin"
                                             (click)="submitUserRole()">Continue</button>
                                     </div>
                                 </div>
@@ -185,7 +196,7 @@
                             <div class="login-modal-title">Register</div>
                             <form class="login-modal-form-wrapp" [formGroup]="registerForm">
                                 <div class="row">
-                                    <div class="col-md-12 form-block">
+                                    <div class="col-md-12">
                                         <label>Title</label>
                                         <select class="form-select form-select-lg mb-3"
                                             aria-label=".form-select-lg example" formControlName="title">
@@ -195,23 +206,21 @@
                                             <option value="">Lorem ipsum</option>
                                             <option value="">Lorem ipsum</option>
                                         </select>
+                                        <div [ngClass]="{'error-block': true}"></div>
                                     </div>
                                     <div class="col-md-12">
                                         <label>First name</label>
                                         <input type="text" formControlName="firstName">
                                         <!-- first name error validtion -->
-                                        <div
-                                            [ngClass]="{'form-block':true,  'form-block-invalid':registerForm.controls.firstName.touched || registerForm.controls['firstName'].dirty && registerForm.controls['firstName'].hasError('required')}">
-                                        </div>
-                                        <div
-                                            *ngIf="!registerForm.invalid || registerForm.controls.firstName.touched || registerForm.controls['firstName'].dirty">
-                                            <div *ngIf="registerForm.controls['firstName'].hasError('required')"
+                                        <!-- display error -->
+                                        <div [ngClass]="{'error-block': true}">
+                                            <span
+                                                *ngIf="!registerForm.invalid || registerForm.controls.firstName.touched || registerForm.controls['firstName'].dirty"
                                                 [ngClass]="{'errorClass': true, 'w-100': true}">
-                                                First name is required.
-                                            </div>
-                                        </div>
-                                        <div
-                                            [ngClass]="{'form-block': !registerForm.controls['firstName'].hasError('required')}">
+                                                <span *ngIf="registerForm.controls['firstName'].hasError('required')">
+                                                    First name is required.
+                                                </span>
+                                            </span>
                                         </div>
                                     </div>
                                     <div class="col-md-12 form-block">
@@ -222,18 +231,14 @@
                                         <label>Last name</label>
                                         <input type="text" formControlName="lastName">
                                         <!-- last name error validation -->
-                                        <div
-                                            [ngClass]="{'form-block':true,  'form-block-invalid':registerForm.controls.lastName.touched || registerForm.controls['lastName'].dirty && registerForm.controls['lastName'].hasError('required')}">
-                                        </div>
-                                        <div
-                                            *ngIf="!registerForm.invalid || registerForm.controls.lastName.touched || registerForm.controls['lastName'].dirty">
-                                            <div *ngIf="registerForm.controls['lastName'].hasError('required')"
-                                                [ngClass]="{'errorClass': true, 'w-100': true}">
-                                                Last name is required.
-                                            </div>
-                                        </div>
-                                        <div
-                                            [ngClass]="{'form-block': !registerForm.controls['lastName'].hasError('required')}">
+                                        <div [ngClass]="{'error-block': true}">
+                                            <span
+                                                *ngIf="!registerForm.invalid || registerForm.controls.lastName.touched || registerForm.controls['lastName'].dirty">
+                                                <span *ngIf="registerForm.controls['lastName'].hasError('required')"
+                                                    [ngClass]="{'errorClass': true, 'w-100': true}">
+                                                    Last name is required.
+                                                </span>
+                                            </span>
                                         </div>
                                     </div>
                                     <div class="col-md-12">
@@ -247,18 +252,15 @@
                                             <div class="col-md-8">
                                                 <input type="number" formControlName="phoneNumber">
                                                 <!-- phone number error -->
-                                                <div
-                                                    [ngClass]="{'form-block':true,  'form-block-invalid':registerForm.controls.phoneNumber.touched || registerForm.controls['phoneNumber'].dirty && registerForm.controls['phoneNumber'].hasError('required')}">
-                                                </div>
-                                                <div
-                                                    *ngIf="!registerForm.invalid || registerForm.controls.phoneNumber.touched || registerForm.controls['phoneNumber'].dirty">
-                                                    <div *ngIf="registerForm.controls['phoneNumber'].hasError('required')"
-                                                        [ngClass]="{'errorClass': true, 'w-100': true}">
-                                                        Phone Number is required.
-                                                    </div>
-                                                </div>
-                                                <div
-                                                    [ngClass]="{'form-block': !registerForm.controls['phoneNumber'].hasError('required')}">
+                                                <div [ngClass]="{'error-block': true}">
+                                                    <span
+                                                        *ngIf="!registerForm.invalid || registerForm.controls.phoneNumber.touched || registerForm.controls['phoneNumber'].dirty">
+                                                        <span
+                                                            *ngIf="registerForm.controls['phoneNumber'].hasError('required')"
+                                                            [ngClass]="{'errorClass': true, 'w-100': true}">
+                                                            Phone Number is required.
+                                                        </span>
+                                                    </span>
                                                 </div>
                                             </div>
                                         </div>
@@ -267,27 +269,24 @@
                                         <label>Email Address</label>
                                         <input type="email" formControlName="userName">
                                         <!-- emil -->
-                                        <div
-                                            [ngClass]="{'form-block':true,  'form-block-invalid':registerForm.controls.userName.touched || registerForm.controls['userName'].dirty && registerForm.controls['userName'].hasError('required') || registerForm.controls['userName'].hasError('email')}">
-                                        </div>
-                                        <div
-                                            *ngIf="!registerForm.invalid || registerForm.controls.userName.touched || registerForm.controls['userName'].dirty">
-                                            <div *ngIf="registerForm.controls['userName'].hasError('required'); else emailError"
-                                                [ngClass]="{'errorClass': true, 'w-100': true}">
-                                                Email is required.
-                                            </div>
-                                            <ng-template #emailError>
-                                                <div *ngIf="registerForm.controls['userName'].hasError('email')"
+                                        <div [ngClass]="{'error-block': true}">
+                                            <span
+                                                *ngIf="!registerForm.invalid || registerForm.controls.userName.touched || registerForm.controls['userName'].dirty">
+                                                <span
+                                                    *ngIf="registerForm.controls['userName'].hasError('required'); else emailError"
                                                     [ngClass]="{'errorClass': true, 'w-100': true}">
-                                                    Please enter valid Email ID
-                                                </div>
-                                            </ng-template>
-                                            <div
-                                                [ngClass]="{'form-block': !registerForm.controls['phoneNumber'].hasError('required') && !registerForm.controls['userName'].hasError('email')}">
-                                            </div>
+                                                    Email is required.
+                                                </span>
+                                                <ng-template #emailError>
+                                                    <span *ngIf="registerForm.controls['userName'].hasError('email')"
+                                                        [ngClass]="{'errorClass': true, 'w-100': true}">
+                                                        Please enter valid Email ID
+                                                    </span>
+                                                </ng-template>
+                                            </span>
                                         </div>
                                     </div>
-                                    <div class="col-md-12 form-block">
+                                    <div class="col-md-12 ">
                                         <div class="d-flex align-items-center justify-content-between">
                                             <label>Date of Birth</label>
                                             <span class="gray-texy">Optional</span>
@@ -310,9 +309,11 @@
                                                         {{year}}</option>
                                                 </select>
                                             </div>
+                                            <!-- error -->
+                                            <div [ngClass]="{'error-block': true}"></div>
                                         </div>
                                     </div>
-                                    <div class="col-md-12 form-block">
+                                    <div class="col-md-12">
                                         <label>Gender</label>
                                         <div class="row">
                                             <div class="col-md-3">
@@ -325,38 +326,34 @@
                                                     formControlName="gender">
                                                 <label for="female">Female</label>
                                             </div>
-                                            <div class="col-md-5">
+                                            <div class="col-md-5" [ngStyle]="{'display':'contents'}">
                                                 <input type="radio" id="don_not_prefer" name="gender"
                                                     value="Do not prefer" formControlName="gender">
                                                 <label for="don_not_prefer">Do not prefer</label>
                                             </div>
-                                            <!-- gender validation -->
-                                            <div
-                                                [ngClass]="{'form-block':true,  'form-block-invalid':registerForm.controls.gender.touched || registerForm.controls['gender'].dirty && registerForm.controls['gender'].hasError('required')}">
-                                            </div>
-                                            <div
-                                                *ngIf="!registerForm.invalid || registerForm.controls.gender.touched || registerForm.controls['gender'].dirty">
-                                                <div *ngIf="registerForm.controls['gender'].hasError('required')"
+                                            <!-- gender validation -->                                            
+                                            <div [ngClass]="{'error-block': true}">
+                                                <span *ngIf="!registerForm.invalid || registerForm.controls.gender.touched || registerForm.controls['gender'].dirty">
+                                                    <span *ngIf="registerForm.controls['gender'].hasError('required')"
                                                     [ngClass]="{'errorClass': true, 'w-100': true}">
                                                     Gender is required.
-                                                </div>
-                                            </div>
-                                            <div
-                                                [ngClass]="{'form-block': !registerForm.controls['gender'].hasError('required')}">
+                                                    </span>
+                                                </span>
                                             </div>
                                             <!-- ---- -->
                                         </div>
                                     </div>
-                                    <div class="col-md-12 form-block">
+                                    <div class="col-md-12">
                                         <div class="checkbox">
-                                            <input type="checkbox" id="agree_register_form">
+                                            <input type="checkbox" id="agree_register_form" formControlName="termsAndCondition">
                                             <label for="agree_register_form">Agree to <a href="#" class="red-text">Terms
                                                     & Conditions</a></label>
                                         </div>
+                                        <div [ngClass]="{'error-block': true}"></div>    
                                     </div>
-                                    <div class="col-md-12 form-block">
-                                        <a href="create-a-listing.html" class="podsliving-button w-100 button-disable"
-                                            id="register_form_continut_button">Continue</a>
+                                    <div class="col-md-12">
+                                        <button  [ngClass]="{'podsliving-button': true, 'w-100': true, 'button-remove-margin': true, 'disabledButtonColor': !registerForm.valid}"
+                                            id="register_form_continut_button" type="submit" [disabled]="!registerForm.valid">Continue</button>
                                     </div>
                                 </div>
                             </form>
